@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="StyleSheet.css" rel="stylesheet" type="text/css">
+<script>
+function $(id){
+    return document.getElementById(id);
+}
+function create_div(){
+    return document.createElement("div");
+}
+function flip_delete (id1,id2){
+    var f1=$(id1);
+    var f2=$(id2);
+    console.log(id1);
+    f1.removeEventListener('click',flipcard);
+    f2.removeEventListener('click',flipcard);
+    
+}
+function print_chance(chance){
+    document.getElementById("chance").textContent=("chance ="+(chance));
+
+}
+function print_score(){
+    document.getElementById("score").textContent="score :"+score;
+}
+function remove_same(id1,id2){
+    var x=$(id1);
+    var y=$(id2);
+    x.parentNode.removeChild(x);
+    y.parentNode.removeChild(y);
+}
+
+var score=0;
+var chance=16;
+let flipped=false;
+let first,second;
+let c1,c2;
+
+//print_chance(chance);
+function flipcard(){
+    if(score==8){
+        alert("You Win Your score is "+score+" And Your chance is "+chance)
+        restartgame();
+
+    }
+    if(chance>0){
+   this.classList.toggle('flip');
+    if(!flipped){
+        flipped=true;
+        first=this.id;
+       console.log(first);
+       
+   }
+   else
+    {
+       
+        flipped=false;
+        second=this.id;
+        var x="else"+second;
+        console.log(x);
+    }
+    
+   
+    if(first==second)
+    {
+        $(first).classList.remove('flip');
+        first=null;
+        second=null;
+    
+     }
+     else if(first[1]!=second[1])
+        {
+            if(first[2]==second[2]){
+            score++;
+        document.getElementById("score").textContent=("score ="+(score));
+        flip_delete(first,second);
+        if(score==8){
+        alert("You Win Your score is "+score+" And Your chance is "+chance);
+       setTimeout(() => {
+           restartgame();
+       }, 200); 
+
+    }
+        
+        first=null;
+        second=null;
+        }
+            else{
+                get_front(first,second);
+                first=null;
+                second=null;
+                chance--;
+                print_chance(chance);
+
+
+            }
+        }
+    else{
+        get_front(first,second);
+        first=null;
+        second=null;
+        chance--;
+        print_chance(chance);
+
+    }
+    }
+    else{
+        alert("GAME OVER Your score is "+score+" And Your chance is "+chance);
+        setTimeout(() => {
+           restartgame();
+       }, 500); 
+
+        
+    }
+}
+function restartgame(){
+    score=0;
+    chance=16;
+    var x= document.createElement("BUTTON");
+    x.id="rbutton";
+    var t=document.createTextNode("RESTART Game");
+    x.appendChild(t);
+    x.addEventListener('click',add);
+    var y=$("content");
+    y.innerHTML="";
+    y.appendChild(x);
+    print_score();
+   
+
+
+}
+function get_front(first,second){
+    setTimeout(() => {
+        $(first).classList.remove('flip');
+        $(second).classList.remove('flip'); 
+       }, 500); 
+    
+}
+
+function load(){
+document.body.innerHTML="";
+var board=create_div();
+board.id="board";
+var times=create_div();
+times.id="times";
+var sc=document.createElement("h1");
+sc.id="score";
+sc.textContent="Score:";
+board.appendChild(sc);
+var ch=document.createElement("h1");
+ch.id="chance";
+ch.textContent="Chance :"
+times.appendChild(ch);
+board.appendChild(times);
+document.body.appendChild(board);
+var cont=document.createElement("div");
+cont.id="content";
+cont.classList.add("screen");
+document.body.appendChild(cont);
+add();
+
+
+}
+function add(){
+    var y=$("content");
+    y.innerHTML="";
+    chance=16;
+    score=0;
+    print_chance(chance);
+    var ran;
+    var x=[1,2,3,4,5,6,7,8];
+    var x2=[1,2,3,4,5,6,7,8];
+ var flocation="card/front.jpg";
+    for(var i =x.length-1;i>=0;i--){
+        var ran=x.splice(Math.floor(Math.random()*(i+1)),1)[0];
+        var ran2=x2.splice(Math.floor(Math.random()*(i+1)),1)[0];
+        var backcard="card/"+ran+".png";
+        var backcard2="card/"+ran2+".png";
+        var image=document.createElement("img");
+        image.style.width="100%";
+        image.style.height="200px";
+        image.src=flocation;
+        var image2=document.createElement("img");
+        var imageback=document.createElement("img");
+        imageback.style.width="340px";
+        imageback.style.height="200px";
+        imageback.src=backcard;
+        var imageback2=document.createElement("img");
+        imageback2.style.width="340px";
+        imageback2.style.height="200px";
+        imageback2.src=backcard2;
+        image2.style.width="100%";
+        image2.style.height="200px";
+        image2.src=flocation;
+        
+        var z=create_div();
+        var z2=create_div();
+        var front=create_div();
+        front.id="front"+(ran);
+        var back=create_div();
+        back.id="back"+ran;
+        var front2=create_div();
+        front2.id="front"+ran2;
+        var back2=create_div();
+        back2.id="back"+ran2;
+        front.classList.add('front');
+        front2.classList.add('front');
+        back.classList.add('back');
+        back2.classList.add('back');       
+        z.id="c1"+ran;
+        z2.id="c2"+ran2;
+        z.classList.add('card');
+        z2.classList.add('card');
+        front.appendChild(image);
+        front2.appendChild(image2);
+        back.appendChild(imageback);
+        back2.appendChild(imageback2);
+        z.appendChild(front);
+        z.appendChild(back);
+        z2.appendChild(front2);
+        z2.appendChild(back2);
+        y.appendChild(z);
+        y.appendChild(z2);
+    }
+   const cards=document.querySelectorAll('.card'); /*gives flipping for all cards*/
+   cards.forEach(carder => carder.addEventListener('click',flipcard));
+    var j=$('add');
+    j.style.visibility='hidden';   
+}
+
+
+</script>
+</head>
+<body>
+<button onclick=load() id="play">PLAY</button>
+
+</body>
+
+
+</html>
